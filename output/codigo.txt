@@ -1,0 +1,21 @@
+add R1, R2, R3
+sub R3, R2, R1
+zeros R1
+xor R1, R2, R3
+or R1, R2, R3
+passnota R4, R3
+and R1, R2, R3
+asl R1, R2, R3
+asr R1, R2, R3
+lsl R1, R2, R3
+lsr R1, R2, R3
+passa R4, R3
+lch R3, 15
+lcl R3, 15
+load R3, R1
+store R3, R1
+jal 100
+jr R3
+beq R3, R2, 20
+bne R3, R2, 20
+j 100
