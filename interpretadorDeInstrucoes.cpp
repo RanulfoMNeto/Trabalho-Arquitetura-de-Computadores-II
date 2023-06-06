@@ -1,12 +1,10 @@
+#ifndef _CABECALHO_H
+	#include "cabecalho.hpp"
+#endif
 #include <fstream>
 #include <string>
 #include <map>
 #include <algorithm>
-#include <bits/stdc++.h>
-
-#include <iostream>
-
-using namespace std;
 
 class Interpretador{
     private:
@@ -67,19 +65,14 @@ class Interpretador{
         };
 
     public:
-        Interpretador(){
-            
+        Interpretador(string arquivo, CacheL1Instrucoes* &instr){
+            converter(arquivo, instr);
         }
 
-        Interpretador(string arquivo){
-            converter(arquivo);
-        }
-
-        bool converter(string nomeArq){
+        bool converter(string nomeArq, CacheL1Instrucoes* &instr){
             ifstream txt(nomeArq);
-            ofstream bin("programa.bin", ios::binary);
 
-            if(txt and bin){
+            if(txt){
                 string linha;
                 unsigned short pc = 0;
 
@@ -87,63 +80,126 @@ class Interpretador{
                     cout << pc << " -> " << linha << endl;
 
                     size_t separador = linha.find(' ');
-                    string funcao = linha.substr(0, separador); // add, sub, ...
+                    string funcao = linha.substr(0, separador);
                     linha = linha.substr(separador+1);
                     linha.erase(remove(linha.begin(), linha.end(), ' '), linha.end());
 
                     string instrucaoBin = opcodeMap[funcao];
 
                     cout << pc << " -> ";
-
-                    pc++;
                     
                     if(tipoInstrucaoMap[funcao] == "RaRbRc")
                         instrucaoBin = tipoRaRbRc(instrucaoBin, linha);
-                    // else if(tipoInstrucaoMap[funcao] == "ALS")
-                    //     tipoAritmeticaLogicaShamt(linhaB, linha);
-                    // else if(tipoInstrucaoMap[funcao] == "IME")
-                    //     tipoImediata(linhaB, linha);
-                    // else if(tipoInstrucaoMap[funcao] == "MEM")
-                    //     tipoMemoria(linhaB, linha);
-                    // else if(tipoInstrucaoMap[funcao] == "DC")
-                    //     tipoDesvioCondicional(linhaB, linha, pc);
-                    // else if(tipoInstrucaoMap[funcao] == "DI")
-                    //     tipoDesvioIncondicional(linhaB, linha);
-                    else 
+                    else if(tipoInstrucaoMap[funcao] == "RaRc")
+                        instrucaoBin = tipoRaRc(instrucaoBin, linha);
+                    else if(tipoInstrucaoMap[funcao] == "Rc")
+                        instrucaoBin = tipoRc(instrucaoBin, linha);
+                    else if(tipoInstrucaoMap[funcao] == "RcConst")
+                        instrucaoBin = tipoRcConst(instrucaoBin, linha);
+                    else if(tipoInstrucaoMap[funcao] == "RaRbEnd")
+                        instrucaoBin = tipoRaRbEnd(instrucaoBin, linha);
+                    else if(tipoInstrucaoMap[funcao] == "R0Imme")
+                        instrucaoBin = tipoR0Imme(instrucaoBin, linha);
+                    else{
                         cout << "funcao nao reconhecida" << endl;
+                        return false;
+                    }
                     
                     bitset<32> instrBitset(instrucaoBin);
-                    cout << instrBitset.to_string();
-                    bin.write((const char *) &instrBitset, sizeof(bitset<32>));  
+                    cout << instrBitset.to_string() << endl;
+
+                    instr->setRegistrador(pc, instrBitset);
+
+                    pc++;
                 }
 
                 txt.close();
-                bin.close();
                 return true;
             }
             else
                 return false;
         }
 
+        int retornaNumLinha(string &linha){
+            try{
+                size_t separador = linha.find(',');
+                int reg = stoi(linha.substr(1, separador-1));
+                linha = linha.substr(separador+1);
+                return reg;
+            }
+            catch(const std::invalid_argument& ia){
+                cout << "Invalid argument: " << ia.what() << endl;
+                return -1;
+            }
+        }
+
         string tipoRaRbRc(string instrucaoBin, string linha){
-            cout << linha << endl;
-            // size_t separador = linha.find(',');
-            // 
-            // int reg = stoi(linha.substr(1, separador-1));
-            // bitset<32> rc(reg);
-            // linha = linha.substr(separador+1);
+            bitset<8> rc(retornaNumLinha(linha));
 
-            // separador = linha.find(',');
-            // reg = stoi(linha.substr(1, separador-1));
-            // bitset<32> ra(reg);
-            // linha = linha.substr(separador+1);
+            bitset<8> ra(retornaNumLinha(linha));
 
-            // reg = stoi(linha);
-            // bitset<32> rb(reg);
+            int reg = stoi(linha.substr(1));
+	        bitset<8> rb(reg);
 
-            // cout << rc.to_string() << endl;
-            // cout << ra.to_string() << endl;
-            // cout << rb.to_string() << endl;
+            instrucaoBin += ra.to_string() + rb.to_string() + rc.to_string();
+
+            return instrucaoBin;
+        }
+
+        string tipoRaRc(string instrucaoBin, string linha){
+            bitset<8> rc(retornaNumLinha(linha));
+
+            int reg = stoi(linha.substr(1));
+	        bitset<8> ra(reg);
+
+            bitset<8> rb(0);
+
+            instrucaoBin += ra.to_string() + rb.to_string() + rc.to_string();
+
+            return instrucaoBin;
+        }
+
+        string tipoRc(string instrucaoBin, string linha){
+            int reg = stoi(linha.substr(1));
+	        bitset<8> rc(reg);
+
+            bitset<8> ra(0);
+            bitset<8> rb(0);
+
+            instrucaoBin += ra.to_string() + rb.to_string() + rc.to_string();
+
+            return instrucaoBin;
+        }
+
+        string tipoRcConst(string instrucaoBin, string linha){
+            bitset<8> rc(retornaNumLinha(linha));
+
+            int reg = stoi(linha);
+            bitset<16> const16(reg);
+
+            instrucaoBin += const16.to_string() + rc.to_string();
+
+            return instrucaoBin;
+        }
+
+        string tipoRaRbEnd(string instrucaoBin, string linha){
+            bitset<8> ra(retornaNumLinha(linha));
+
+            bitset<8> rb(retornaNumLinha(linha));
+
+            int reg = stoi(linha);
+	        bitset<8> end(reg);
+
+            instrucaoBin += ra.to_string() + rb.to_string() + end.to_string();
+
+            return instrucaoBin;
+        }
+
+        string tipoR0Imme(string instrucaoBin, string linha){
+            int reg = stoi(linha.substr(1));
+	        bitset<24> end(reg);
+
+            instrucaoBin += end.to_string();
 
             return instrucaoBin;
         }
