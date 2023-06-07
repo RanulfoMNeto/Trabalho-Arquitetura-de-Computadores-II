@@ -69,17 +69,9 @@ bitset<16> recorte16(bitset<32> linha, int inicio){
 	return retorno;
 }
 
-bitset<5> recorte5(bitset<32> linha, int inicio){
-	bitset<5> retorno;
-	for(int i=0; i<5; i++)
-		retorno.set(i, linha[i+inicio]);
-
-	return retorno;
-}
-
-bitset<6> recorte6(bitset<32> linha, int inicio){
-	bitset<6> retorno;
-	for(int i=0; i<6; i++)
+bitset<8> recorte8(bitset<32> linha, int inicio){
+	bitset<8> retorno;
+	for(int i=0; i<8; i++)
 		retorno.set(i, linha[i+inicio]);
 
 	return retorno;
@@ -114,10 +106,10 @@ class BancoRegistradores{
             for(int i=0; i<tamanho; i++)
                 registradores[i] = bitset<32>(0);
         }
-        bitset<32> getRegistrador(bitset<5> endereco){
+        bitset<32> getRegistrador(bitset<8> endereco){
             return registradores[endereco.to_ulong()];
         }
-        void setRegistrador(bitset<5> endereco, bitset<32> valor){
+        void setRegistrador(bitset<8> endereco, bitset<32> valor){
 			if(endereco.to_ulong() != 0)
             	registradores[endereco.to_ulong()] = valor;
         }

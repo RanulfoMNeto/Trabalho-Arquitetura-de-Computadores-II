@@ -31,7 +31,12 @@ class Interpretador{
             {"beq"     , "00010101"},
             {"bne"     , "00010110"},
             {"j"       , "00010111"},
-
+            // addi
+            // subi
+            // mul
+            // div
+            // storei
+            // final -> 11111111
 
         };
         map<string, string> tipoInstrucaoMap = {
