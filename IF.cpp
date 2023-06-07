@@ -4,12 +4,18 @@
 
 class IF{
     public:
-        IF(){}
+        bitset<32> instrucao;
 
-        bitset<32> buscarInstrucao(CacheL1Instrucoes* instrucoes, unsigned short &pc){
-            bitset<32> instrucao = instrucoes->getRegistrador(pc);
+        IF(){
+
+        }
+
+        bool executar(CacheL1Instrucoes* instrucoes, unsigned short &pc){
+            instrucao = instrucoes->getRegistrador(pc);
             pc++;
-            return instrucao;
+            if(instrucao == bitset<32>("11111111000000000000000000000000"))
+                return false;
+            return true;
         }
     
 };

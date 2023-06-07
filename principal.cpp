@@ -3,6 +3,7 @@
 #endif
 #include "interpretadorDeInstrucoes.cpp"
 #include "IF.cpp"
+#include "ID.cpp"
 
 int main(){
     BancoRegistradores *rb = new BancoRegistradores();
@@ -12,13 +13,18 @@ int main(){
 
     unsigned short pc = 0;
 
-    bitset<32> instrucao = IF().buscarInstrucao(instrucoes, pc);
+    IF iF = IF();
+    ID id = ID();
+    // EXMEM exmem = EXMEM();
+    // 
 
-    while(instrucao.to_string() != "11111111"){
+    while(iF.executar(instrucoes, pc)){
         // ID
+        id.executar(iF.instrucao, *rb);
         // EXE/MEM
-        // WB
-        instrucao = IF().buscarInstrucao(instrucoes, pc);
+        // ID(instrucao, rb);
+        // EX(ID().value_ra, ID().)
+        // // WB
     }
 
     return 0;

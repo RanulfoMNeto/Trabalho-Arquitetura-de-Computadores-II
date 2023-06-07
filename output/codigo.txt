@@ -19,6 +19,7 @@ jr R3
 beq R3, R2, 20
 bne R3, R2, 20
 j 100
+final
 
  - alterar o bitset 5 e 6 pra 8
  - anotar funções
