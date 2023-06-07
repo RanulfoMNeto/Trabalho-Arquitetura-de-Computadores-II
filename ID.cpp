@@ -49,7 +49,7 @@ struct ControlUnit
 /*
     Problemas para resolver:
     - Replicação de codigo (opcional)
-    -
+    - Verificar se os recortes de opcode, ra, rb, rc estão certos
 
 
 */
@@ -243,12 +243,17 @@ void ControlUnit::setControlUnit(bitset<8> opcode) // retirei a funct por enquan
             bitset<32> value_Rb;
             bitset<8> Write_Adrr;
 
-            ID(bitset<8> opcode, bitset<8> ra, bitset<8> rb, bitset<8> rc, BancoRegistradores &BR)
+            void executar(bitset<32> instrucao, BancoRegistradores &BR)
             {
-                // falta entender isso aqui, saber oque pegar e como retornar o conteudo do registrador
+                // preciso verificar se ta pegando certo isso aqui
+                bitset<8> opcode = recorte8(instrucao, 24);
+                bitset<8> ra = recorte8(instrucao, 16);
+                bitset<8> rb = recorte8(instrucao, 8);
+                bitset<8> rc = recorte8(instrucao, 0);
+
                 setControlUnit(opcode);
-                // value_Ra = BR.getRegistrador(ra); //tirar comentário quando o get aceitar 8 bits
-                // value_Rb = BR.getRegistrador(rb); //tirar comentário quando o get aceitar 8 bits
+                value_Ra = BR.getRegistrador(ra);
+                value_Rb = BR.getRegistrador(rb);
                 if (reg_dst)
                 {
                     Write_Adrr = rc;
