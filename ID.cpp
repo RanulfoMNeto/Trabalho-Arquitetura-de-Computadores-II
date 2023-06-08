@@ -180,7 +180,7 @@ void ControlUnit::setControlUnit(bitset<8> opcode) // retirei a funct por enquan
         // j
     }
 
-    else if (opcode == bitset<8>("00010001"))
+    // else if (opcode == bitset<8>("00010001"))
 
         //         // Instruções tipo branch (beq / bne / bge):
         //         else if (opcode == bitset<8>("000100") or opcode == bitset<8>("000101") or opcode == bitset<8>("000110"))
@@ -230,38 +230,40 @@ void ControlUnit::setControlUnit(bitset<8> opcode) // retirei a funct por enquan
         //         // alu_op = bitset<2>("00");
         //         imprimirID();
         //     }
-        // }
+}
 
         // // flag bne
 
         // //  funct
 
-        class ID : public ControlUnit
+class ID : public ControlUnit
+{
+    public:
+        bitset<32> value_Ra;
+        bitset<32> value_Rb;
+        bitset<8> Write_Adrr;
+
+        ID(){}
+
+        void executar(bitset<32> instrucao, BancoRegistradores &BR)
         {
-        public:
-            bitset<32> value_Ra;
-            bitset<32> value_Rb;
-            bitset<8> Write_Adrr;
+            // preciso verificar se ta pegando certo isso aqui
+            bitset<8> opcode = recorte8(instrucao, 24);
+            bitset<8> ra = recorte8(instrucao, 16);
+            bitset<8> rb = recorte8(instrucao, 8);
+            bitset<8> rc = recorte8(instrucao, 0);
 
-            void executar(bitset<32> instrucao, BancoRegistradores &BR)
+            setControlUnit(opcode);
+            value_Ra = BR.getRegistrador(ra);
+            value_Rb = BR.getRegistrador(rb);
+            if (reg_dst)
             {
-                // preciso verificar se ta pegando certo isso aqui
-                bitset<8> opcode = recorte8(instrucao, 24);
-                bitset<8> ra = recorte8(instrucao, 16);
-                bitset<8> rb = recorte8(instrucao, 8);
-                bitset<8> rc = recorte8(instrucao, 0);
-
-                setControlUnit(opcode);
-                value_Ra = BR.getRegistrador(ra);
-                value_Rb = BR.getRegistrador(rb);
-                if (reg_dst)
-                {
-                    Write_Adrr = rc;
-                }
-
-                else
-                {
-                    Write_Adrr = rb;
-                }
+                Write_Adrr = rc;
             }
-        };
+
+            else
+            {
+                Write_Adrr = rb;
+            }
+        }
+};

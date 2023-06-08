@@ -4,6 +4,7 @@
 #include "interpretadorDeInstrucoes.cpp"
 #include "IF.cpp"
 #include "ID.cpp"
+#include "EXMEM.cpp"
 
 int main(){
     BancoRegistradores *rb = new BancoRegistradores();
@@ -15,6 +16,7 @@ int main(){
 
     IF iF = IF();
     ID id = ID();
+    EXMEM exMem = EXMEM();
     // EXMEM exmem = EXMEM();
     // 
 
@@ -22,9 +24,8 @@ int main(){
         // ID
         id.executar(iF.instrucao, *rb);
         // EXE/MEM
-        // ID(instrucao, rb);
-        // EX(ID().value_ra, ID().)
-        // // WB
+        exMem.executar(id.value_Ra, id.value_Rb);
+        // WB
     }
 
     return 0;
