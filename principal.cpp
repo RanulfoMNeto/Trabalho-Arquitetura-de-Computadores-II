@@ -30,6 +30,8 @@ int main(){
         // EXE/MEM
         exMem.executar(id.value_Ra, id.value_Rb, id.endereco, id.alu_op, id.alu_src, id.branch, id.jump, pc);
         // WB
+        exMem.result;
+
         system("pause");
     }
 
