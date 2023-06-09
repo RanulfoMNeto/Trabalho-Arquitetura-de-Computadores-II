@@ -10,8 +10,9 @@ class EXMEM{
         bool neg;
 		bitset<32> result;
 
-        void executar(bitset<32> dadoRa, bitset<32> dadoRb, bitset<16> endereco, bitset<5> ALUOp, bool ALUSrc, bool branch, bool jump, unsigned short &pc){
+        void executar(bitset<32> dadoRa, bitset<32> dadoRb, bitset<16> endereco, bitset<5> ALUOp, bool ALUSrc, bool branch, bool jump, unsigned short &pc, bool mem_read, bool mem_write,  CacheL1Dados *dados ){
             execucao(dadoRa, dadoRb, endereco, ALUOp, ALUSrc, branch, jump, pc);
+            memoria(mem_read, mem_write, dadoRa, dadoRb, dados);
             exibirDados(dadoRa, dadoRb);
         }
 
@@ -144,5 +145,21 @@ class EXMEM{
             cout << "Dado Ra: " << bitsetToInt(dadoRa) << endl;
             cout << "Dado Rb: " << bitsetToInt(dadoRb) << endl;
             cout << "Resultado: " << bitsetToInt(result) << endl;
+        }
+
+        void memoria(bool mem_read, bool mem_write, bitset<32> dadoRa, bitset<32> dadoRb, CacheL1Dados *dados ){
+            if (mem_read) {
+                bitset<16> endereco = recorte16(dadoRa, 0);
+                result = dados->getRegistrador(endereco);
+                cout<<"LOAD"<<endl;   
+            }
+
+            // Escreve na memória se MemWrite estiver ativado
+            if (mem_write) {
+                bitset<16>endereco = recorte16(dadoRb, 0);
+                dados->setRegistrador(endereco,dadoRa);
+                cout<<"STORE"<<endl;
+            }
+
         }
 };
