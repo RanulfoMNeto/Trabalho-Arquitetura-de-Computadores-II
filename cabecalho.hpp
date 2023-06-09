@@ -72,7 +72,7 @@ bitset<32> operator^(bitset<32> b1, bitset<32> b2){
     return result;
 }
 
-bitset<16> recorte16(bitset<32> linha, int inicio){
+bitset<16> recorte16(bitset<32> linha, int inicio){ // recorta de tras pra frente  16<-inicio
 	bitset<16> retorno;
 	for(int i=0; i<16; i++)
 		retorno.set(i, linha[i+inicio]);
