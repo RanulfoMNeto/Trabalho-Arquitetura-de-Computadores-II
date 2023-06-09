@@ -21,6 +21,8 @@ int main(){
     EXMEM exMem = EXMEM();
     // EXMEM exmem = EXMEM();
     // 
+    rb->setRegistrador(bitset<8>(1), bitset<32>(20));
+    rb->setRegistrador(bitset<8>(2), bitset<32>(10));
 
     while(iF.executar(instrucoes, pc)){
         // ID

@@ -59,6 +59,10 @@ class Interpretador{
             {"asr" , "RaRbRc"},
             {"lsl" , "RaRbRc"},
             {"lsr" , "RaRbRc"},
+            {"mul" , "RaRbRc"},
+            {"div" , "RaRbRc"},
+            {"nor" , "RaRbRc"},
+            {"nand", "RaRbRc"},
             // RaRc
             {"passnota" , "RaRc"},
             {"passa"    , "RaRc"},
@@ -73,9 +77,16 @@ class Interpretador{
             // RaRbEnd
             {"beq" , "RaRbEnd"},
             {"bne" , "RaRbEnd"},
+            {"bgt" , "RaRbEnd"},
+            {"blt" , "RaRbEnd"},
             // R0Imme
             {"jal" , "R0Imme"},
             {"j"   , "R0Imme"},
+            // RcRaImm
+            {"addi" , "RcRaImm"},
+            {"subi" , "RcRaImm"},
+            // StoreImm
+            {"storei" , "StoreImm"},
         };
 
     public:
@@ -114,6 +125,10 @@ class Interpretador{
                         instrucaoBin = tipoRaRbEnd(instrucaoBin, linha);
                     else if(tipoInstrucaoMap[funcao] == "R0Imme")
                         instrucaoBin = tipoR0Imme(instrucaoBin, linha);
+                    else if(tipoInstrucaoMap[funcao] == "RcRaImm")
+                        instrucaoBin = tipoRcRaImm(instrucaoBin, linha);
+                    else if(funcao == "halt")
+                        instrucaoBin += "111111111111111111111111";
                     else{
                         cout << "funcao nao reconhecida" << endl;
                         return false;
@@ -216,5 +231,16 @@ class Interpretador{
             instrucaoBin += end.to_string();
 
             return instrucaoBin;
+        }
+
+        string tipoRcRaImm(string instrucaoBin, string linha){
+            bitset<8> rc(retornaNumLinha(linha));
+
+            bitset<8> ra(retornaNumLinha(linha));
+
+            int reg = stoi(linha);
+	        bitset<8> imm(reg);
+
+            instrucaoBin += ra.to_string() + imm.to_string() + rc.to_string();
         }
 };
