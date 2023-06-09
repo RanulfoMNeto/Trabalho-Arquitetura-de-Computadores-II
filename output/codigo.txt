@@ -10,17 +10,3 @@ asr R1, R2, R3
 lsl R1, R2, R3
 lsr R1, R2, R3
 passa R4, R3
-lch R3, 15
-lcl R3, 15
-load R3, R1
-store R3, R1
-jal 100
-jr R3
-beq R3, R2, 20
-bne R3, R2, 20
-j 100
-final
-
- - alterar o bitset 5 e 6 pra 8
- - anotar funções
- - 

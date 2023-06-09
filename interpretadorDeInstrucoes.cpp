@@ -9,6 +9,7 @@
 class Interpretador{
     private:
         map<string, string> opcodeMap = {
+            {"addi"    , "00000000"}, // soma com imediato ********
             {"add"     , "00000001"}, // soma
             {"sub"     , "00000010"}, // subtração
             {"zeros"   , "00000011"}, // zerar
@@ -21,7 +22,7 @@ class Interpretador{
             {"lsl"     , "00001010"}, // shift lógico pra esquerda
             {"lsr"     , "00001011"}, // shift lógico pra direita
             {"passa"   , "00001100"}, // copia ra pra rc
-                                      // ta faltando 00001101
+            {"nor"     , "00001101"}, // ou bit-a-bit depois not(passnota) ********
             {"lch"     , "00001110"}, // carrega constante nos 16b mais significativos
             {"lcl"     , "00001111"}, // carrega constante nos 16b menos significativos
             {"load"    , "00010000"}, // traz o dado da memória
@@ -31,6 +32,14 @@ class Interpretador{
             {"beq"     , "00010101"},
             {"bne"     , "00010110"},
             {"j"       , "00010111"},
+            {"subi"    , "00011000"}, // sub com imediato ********
+            {"mul"     , "00011001"}, // multiplicação inteira ********
+            {"div"     , "00011010"}, // divisão inteira ********
+            {"storei"  , "00011011"}, // store imediato ********
+            {"bgt"     , "00011100"}, // branch greater than ********
+            {"blt"     , "00011101"}, // branch less than ********
+            {"nand"    , "00011110"}, // and bit-a-bit depois not(passnota) ********
+            {"halt"    , "11111111"}  // final
             // addi
             // subi
             // mul

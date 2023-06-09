@@ -12,6 +12,8 @@ int main(){
     CacheL1Instrucoes *instrucoes = new CacheL1Instrucoes();
     Interpretador("codigo.txt", instrucoes);
 
+    system("pause");
+
     unsigned short pc = 0;
 
     IF iF = IF();
@@ -24,8 +26,9 @@ int main(){
         // ID
         id.executar(iF.instrucao, *rb);
         // EXE/MEM
-        exMem.executar(id.value_Ra, id.value_Rb);
+        exMem.executar(id.value_Ra, id.value_Rb, id.endereco, id.alu_op, id.alu_src, id.branch, id.jump, pc);
         // WB
+        system("pause");
     }
 
     return 0;

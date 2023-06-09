@@ -61,6 +61,17 @@ bitset<32> operator<(bitset<32> b1, bitset<32> b2){
 	return result;
 }
 
+bitset<32> operator^(bitset<32> b1, bitset<32> b2){
+    bitset<32> result;
+	for(int i=0; i<32; i++){
+        if(b1[i] == b2[i])
+            result[i] = 0;
+        else
+            result[i] = 1;
+    }
+    return result;
+}
+
 bitset<16> recorte16(bitset<32> linha, int inicio){
 	bitset<16> retorno;
 	for(int i=0; i<16; i++)
@@ -72,6 +83,14 @@ bitset<16> recorte16(bitset<32> linha, int inicio){
 bitset<8> recorte8(bitset<32> linha, int inicio){
 	bitset<8> retorno;
 	for(int i=0; i<8; i++)
+		retorno.set(i, linha[i+inicio]);
+
+	return retorno;
+}
+
+bitset<5> recorte5(bitset<8> linha, int inicio){
+	bitset<5> retorno;
+	for(int i=0; i<5; i++)
 		retorno.set(i, linha[i+inicio]);
 
 	return retorno;

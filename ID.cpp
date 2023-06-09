@@ -6,7 +6,7 @@ struct ControlUnit
 {
     // inicialização da unidade de controle
     bool jump = false;
-    bitset<2> branch;
+    bool branch = false;
     bool mem_read = false;
     bool mem_to_reg = false;
     bool mem_write = false;
@@ -14,7 +14,7 @@ struct ControlUnit
     bool reg_write = false;
     bool reg_dst = false;
 
-    bitset<4> alu_op;
+    bitset<5> alu_op;
 
     void setControlUnit(bitset<8> opcode); // retirei a funct por enquanto
     void imprimirID()
@@ -57,14 +57,13 @@ struct ControlUnit
 void ControlUnit::setControlUnit(bitset<8> opcode) // retirei a funct por enquanto
 {
     // Instruções ALU
+    alu_op = recorte5(opcode, 0);
+
     if (opcode == bitset<8>("00000001"))
     {
         // soma de inteiros
         reg_write = true;
         reg_dst = true;
-
-        // retorno pra AlUCtr
-        alu_op = bitset<4>("0000"); // sinal para faze adição
         imprimirID();
     }
     else if (opcode == bitset<8>("00000010"))
@@ -72,8 +71,6 @@ void ControlUnit::setControlUnit(bitset<8> opcode) // retirei a funct por enquan
         // subtração
         reg_write = true;
         reg_dst = true;
-
-        alu_op = bitset<4>("0001");
         imprimirID();
     }
     else if (opcode == bitset<8>("00000011"))
@@ -81,21 +78,18 @@ void ControlUnit::setControlUnit(bitset<8> opcode) // retirei a funct por enquan
         // zerar
         reg_write = true;
         reg_dst = true;
-        alu_op = bitset<4>("0010");
     }
     else if (opcode == bitset<8>("00000100"))
     {
         // XOR
         reg_write = true;
         reg_dst = true;
-        alu_op = bitset<4>("0011");
     }
     else if (opcode == bitset<8>("00000101"))
     {
         // OR
         reg_write = true;
         reg_dst = true;
-        alu_op = bitset<4>("0100");
     }
     else if (opcode == bitset<8>("00000110"))
     {
@@ -242,6 +236,7 @@ class ID : public ControlUnit
         bitset<32> value_Ra;
         bitset<32> value_Rb;
         bitset<8> Write_Adrr;
+        bitset<16> endereco;
 
         ID(){}
 
