@@ -15,6 +15,8 @@ struct ControlUnit
     bool reg_dst = false;
 
     bitset<5> alu_op;
+    bitset<16> endereco;
+
     
 
     void setControlUnit(bitset<8> opcode, bitset<32> instrucaoCompleta); // instrução aqui pq preciso dela completa pra recortar
@@ -83,9 +85,11 @@ void ControlUnit::setControlUnit(bitset<8> opcode, bitset<32> instrucaoCompleta)
 {
     // Instruções ALU
     alu_op = recorte5(opcode, 0);
+    
 
     if (verificaTipoR(opcode))
     {
+        
         // Instruções Padrão R
         reg_write = true;
         reg_dst = true;
@@ -96,11 +100,10 @@ void ControlUnit::setControlUnit(bitset<8> opcode, bitset<32> instrucaoCompleta)
     {
         
         // lch ou lcl
-        bitset<16> const16;
         reg_write = true;
         reg_dst = true;
         alu_src = true;
-        const16 = recorte16(instrucaoCompleta, 8);
+        endereco = recorte16(instrucaoCompleta, 8);
         imprimirID();
     }
 
@@ -123,10 +126,9 @@ void ControlUnit::setControlUnit(bitset<8> opcode, bitset<32> instrucaoCompleta)
         imprimirID();
     }
 
-    else if (opcode == bitset<8>("00010010"))
+    else if (opcode == bitset<8>("00010010") or opcode == bitset<8>("00010111"))
     {
-        // jal
-        bitset<16> endereco;
+        // jal ou j
         endereco = recorte16(instrucaoCompleta, 0);
         jump = true;
         imprimirID();
@@ -142,16 +144,8 @@ void ControlUnit::setControlUnit(bitset<8> opcode, bitset<32> instrucaoCompleta)
     else if (verificaTipoB(opcode))
     {
         // beq ou bne
-        bitset<8> enderecoBranch;
         branch = true;
-        enderecoBranch = recorte8(instrucaoCompleta, 0);
-        imprimirID();
-    }
-
-    else if (opcode == bitset<8>("00010111"))
-    {
-        // j
-        jump = true;
+        endereco = signalExtension(recorte8(instrucaoCompleta, 0));
         imprimirID();
     }
 }
@@ -162,7 +156,7 @@ public:
     bitset<32> value_Ra;
     bitset<32> value_Rb;
     bitset<8> Write_Adrr;
-    bitset<16> endereco;
+    
 
     ID() {}
 
