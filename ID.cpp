@@ -33,28 +33,42 @@ struct ControlUnit
 
 /*
     Tabela dos valores para ALU
-    0000 - adição
-    0001 - subtração
-    0010 - zero
-    0011 - xor
-    0100 - or
-    0101 - and
-    0110 - shiftAritE
-    0111 - shiftAritD
-    1000 - shiftLogE
-    1001 - shiftLogD
-    1010 - Copy
+    00000 - adição
+    00001 - subtração
+    00010 - zero
+    00011 - xor
+    00100 - or
+    00101 - passnota
+    00110 - and
+    00111 - shiftAritE
+    01000 - shiftAritD
+    01001 - shiftLogE
+    01010 - shiftLogD
+    01011 - Copiar
+    01100 - lch
+    01101 - lcl
+    01110 - load
+    01111 - store
+    10000 - jal
+    10001 - jr
+    10010 - beq
+    10011 - bne
+    10100 - j
+
 */
 
 /*
     Problemas para resolver:
     - Replicação de codigo (opcional)
-    - Verificar se os recortes de opcode, ra, rb, rc estão certos
+    - Talvez criar uma classe para o control unit com construtor inicializando os sinais de controle seja melhor
 
+    Duvidas:
+    - O passnota precisa fazer extensão do sinal?
+    - não entendi muito bem o lch e lcl
 
 */
 
-void ControlUnit::setControlUnit(bitset<8> opcode) // retirei a funct por enquanto
+void ControlUnit::setControlUnit(bitset<8> opcode)
 {
     // Instruções ALU
     alu_op = recorte5(opcode, 0);
@@ -94,40 +108,82 @@ void ControlUnit::setControlUnit(bitset<8> opcode) // retirei a funct por enquan
     else if (opcode == bitset<8>("00000110"))
     {
         // passnota
+        reg_write = true;
+        reg_dst = true;
+        // alu_op = bitset<5>("00101");
+        imprimirID();
     }
     else if (opcode == bitset<8>("00000111"))
     {
         // AND
+        reg_write = true;
+        reg_dst = true;
+        // alu_op = bitset<5>("00110");
+        imprimirID();
     }
     else if (opcode == bitset<8>("00001000"))
     {
         // shift aritimetico esquerda
+        reg_write = true;
+        reg_dst = true;
+        // alu_src = true;
+        // alu_op = bitset<5>("00111");
+        imprimirID();
     }
     else if (opcode == bitset<8>("00001001"))
     {
         // Shift aritmetico direita
+        reg_write = true;
+        reg_dst = true;
+        // alu_src = true;
+        // alu_op = bitset<5>("01000");
+        imprimirID();
     }
     else if (opcode == bitset<8>("00001010"))
     {
         // Shift logico esquerda
+        reg_write = true;
+        reg_dst = true;
+        // alu_src = true;
+        // alu_op = bitset<5>("01001");
+        imprimirID();
     }
     else if (opcode == bitset<8>("00001011"))
     {
         // Shift logico direita
+        reg_write = true;
+        reg_dst = true;
+        // alu_src = true;
+        // alu_op = bitset<5>("01010");
+        imprimirID();
     }
     else if (opcode == bitset<8>("00001100"))
     {
         // Copiar
+        reg_write = true;
+        reg_dst = true;
+        // alu_op = bitset<5>("01011");
+        imprimirID();
     }
 
     else if (opcode == bitset<8>("00001110"))
     {
         // lch
+        reg_write = true;
+        reg_dst = true;
+        alu_src = true;
+        // alu_op = bitset<5>("01100");
+        imprimirID();
     }
 
     else if (opcode == bitset<8>("00001111"))
     {
         // lcl
+        reg_write = true;
+        reg_dst = true;
+        alu_src = true;
+        // alu_op = bitset<5>("01101");
+        imprimirID();
     }
 
     else if (opcode == bitset<8>("00010000"))
@@ -138,6 +194,7 @@ void ControlUnit::setControlUnit(bitset<8> opcode) // retirei a funct por enquan
         mem_to_reg = true;
         alu_src = true;
         reg_write = true;
+        // alu_op = bitset<5>("01110");
 
         imprimirID();
     }
@@ -147,88 +204,50 @@ void ControlUnit::setControlUnit(bitset<8> opcode) // retirei a funct por enquan
         // store
         mem_write = true;
         alu_src = true;
+        // alu_op = bitset<5>("01111");
+        imprimirID();
     }
 
     else if (opcode == bitset<8>("00010010"))
     {
         // jal
+        jump = true;
+        // alu_op = bitset<5>("10000");
+        imprimirID();
     }
 
     else if (opcode == bitset<8>("00010011"))
     {
         // jr
+        jump = true;
+        // alu_op = bitset<5>("10001");
+        imprimirID();
     }
 
     else if (opcode == bitset<8>("00010101"))
     {
         // beq
+        branch = true;
+        // alu_op = bitset<5>("10010");
+        imprimirID();
     }
 
     else if (opcode == bitset<8>("00010110"))
     {
         // bne
+        branch = true;
+        // alu_op = bitset<5>("10011");
+        imprimirID();
     }
 
     else if (opcode == bitset<8>("00010111"))
     {
         // j
+        jump = true;
+        // alu_op = bitset<5>("10100");
+        imprimirID();
     }
-
-    // else if (opcode == bitset<8>("00010001"))
-
-        //         // Instruções tipo branch (beq / bne / bge):
-        //         else if (opcode == bitset<8>("000100") or opcode == bitset<8>("000101") or opcode == bitset<8>("000110"))
-        //         {
-        //             if (opcode == bitset<8>("000101")) // bne
-        //                 branch = bitset<2>("10");
-
-        //             else if (opcode == bitset<8>("000110")) // bge
-        //                 branch = bitset<2>("11");
-        //             else
-        //             {
-        //                 branch = bitset<2>("01");
-        //             }
-
-        //             // alu_op = bitset<2>("01");
-
-        //             imprimirID();
-        //         }
-        //     // Instruções tipo J
-
-        //     else if (opcode == bitset<8>("000010") or opcode == bitset<8>("000011") or (opcode == bitset<8>("000000"))) // retirei a funct por enquanto
-        //     {
-        //         jump = true;
-        //         imprimirID();
-        //     }
-
-        //     // Instrução Load Word
-        //     else if (opcode == bitset<8>("100011"))
-        //     {
-
-        //         // alu_op = bitset<2>("00");
-        //     }
-
-        //     else if (opcode == bitset<8>("101011")) // Instrução Save Word
-        //     {
-
-        //         // alu_op = bitset<2>("00");
-        //         imprimirID();
-        //     }
-
-        //     else
-        //     // Instrução tipo I:
-        //     {
-        //         alu_src = true;
-        //         reg_write = true;
-
-        //         // alu_op = bitset<2>("00");
-        //         imprimirID();
-        //     }
 }
-
-        // // flag bne
-
-        // //  funct
 
 class ID : public ControlUnit
 {
@@ -238,27 +257,27 @@ class ID : public ControlUnit
         bitset<8> Write_Adrr;
         bitset<16> endereco;
 
-        ID(){}
+    ID() {}
 
-        void executar(bitset<32> instrucao, BancoRegistradores &BR)
+    void executar(bitset<32> instrucao, BancoRegistradores &BR)
+    {
+        // preciso verificar se ta pegando certo isso aqui
+        bitset<8> opcode = recorte8(instrucao, 24);
+        bitset<8> ra = recorte8(instrucao, 16);
+        bitset<8> rb = recorte8(instrucao, 8);
+        bitset<8> rc = recorte8(instrucao, 0);
+
+        setControlUnit(opcode);
+        value_Ra = BR.getRegistrador(ra);
+        value_Rb = BR.getRegistrador(rb);
+        if (reg_dst)
         {
-            // preciso verificar se ta pegando certo isso aqui
-            bitset<8> opcode = recorte8(instrucao, 24);
-            bitset<8> ra = recorte8(instrucao, 16);
-            bitset<8> rb = recorte8(instrucao, 8);
-            bitset<8> rc = recorte8(instrucao, 0);
-
-            setControlUnit(opcode);
-            value_Ra = BR.getRegistrador(ra);
-            value_Rb = BR.getRegistrador(rb);
-            if (reg_dst)
-            {
-                Write_Adrr = rc;
-            }
-
-            else
-            {
-                Write_Adrr = rb;
-            }
+            Write_Adrr = rc;
         }
+
+        else
+        {
+            Write_Adrr = rb;
+        }
+    }
 };
