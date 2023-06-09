@@ -242,5 +242,7 @@ class Interpretador{
 	        bitset<8> imm(reg);
 
             instrucaoBin += ra.to_string() + imm.to_string() + rc.to_string();
+
+            return instrucaoBin;
         }
 };

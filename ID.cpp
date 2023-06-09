@@ -22,6 +22,19 @@ struct ControlUnit
     void setControlUnit(bitset<8> opcode, bitset<32> instrucaoCompleta); // instrução aqui pq preciso dela completa pra recortar
     bool verificaTipoR(bitset<8> opcode);
     bool verificaTipoB(bitset<8> opcode);
+
+    void resetarControles() {
+        jump = false;
+        branch = false;
+        mem_read = false;
+        mem_to_reg = false;
+        mem_write = false;
+        alu_src = false;
+        reg_write = false;
+        reg_dst = false;
+
+
+    }
     
     void imprimirID()
     {
@@ -54,6 +67,7 @@ struct ControlUnit
 
 bool ControlUnit::verificaTipoR(bitset<8> opcode) {
     if (opcode == bitset<8>("00000001")) {return true;}
+    if (opcode == bitset<8>("00000010")) {return true;}
     if (opcode == bitset<8>("00000011")) {return true;}
     if (opcode == bitset<8>("00000100")) {return true;}
     if (opcode == bitset<8>("00000101")) {return true;}
@@ -62,6 +76,7 @@ bool ControlUnit::verificaTipoR(bitset<8> opcode) {
     if (opcode == bitset<8>("00001000")) {return true;}
     if (opcode == bitset<8>("00001001")) {return true;}
     if (opcode == bitset<8>("00001010")) {return true;}
+    if (opcode == bitset<8>("00001011")) {return true;}
     if (opcode == bitset<8>("00001100")) {return true;}
     if (opcode == bitset<8>("00001101")) {return true;}
     if (opcode == bitset<8>("00011000")) {return true;}
@@ -168,6 +183,7 @@ public:
         bitset<8> rc = recorte8(instrucao, 0);
         bitset<32> instCompleta = instrucao;
 
+        resetarControles();
         setControlUnit(opcode, instCompleta);
         value_Ra = BR.getRegistrador(ra);
         value_Rb = BR.getRegistrador(rb);
