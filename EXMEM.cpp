@@ -12,6 +12,7 @@ class EXMEM{
 
         void executar(bitset<32> dadoRa, bitset<32> dadoRb, bitset<16> endereco, bitset<5> ALUOp, bool ALUSrc, bool branch, bool jump, unsigned short &pc){
             execucao(dadoRa, dadoRb, endereco, ALUOp, ALUSrc, branch, jump, pc);
+            exibirDados(dadoRa, dadoRb);
         }
 
         void execucao(bitset<32> dadoRa, bitset<32> dadoRb, bitset<16> endereco, bitset<5> ALUOp, bool ALUSrc, bool branch, bool jump, unsigned short &pc){
@@ -139,4 +140,9 @@ class EXMEM{
             }
         }
 
+        void exibirDados(bitset<32> dadoRa, bitset<32> dadoRb){
+            cout << "Dado Ra: " << bitsetToInt(dadoRa) << endl;
+            cout << "Dado Rb: " << bitsetToInt(dadoRb) << endl;
+            cout << "Resultado: " << bitsetToInt(result) << endl;
+        }
 };

@@ -10,3 +10,4 @@ asr R1, R2, R3
 lsl R1, R2, R3
 lsr R1, R2, R3
 passa R4, R3
+halt
