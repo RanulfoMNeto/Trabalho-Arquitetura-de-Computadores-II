@@ -11,12 +11,21 @@ class EXMEM{
 		bitset<32> result;
 
         void executar(bitset<32> dadoRa, bitset<32> dadoRb, bitset<16> endereco, bitset<5> ALUOp, bool ALUSrc, bool branch, bool jump, unsigned short &pc, bool mem_read, bool mem_write,  CacheL1Dados *dados ){
+            resetar();
             execucao(dadoRa, dadoRb, endereco, ALUOp, ALUSrc, branch, jump, pc);
             memoria(mem_read, mem_write, dadoRa, dadoRb, dados);
             exibirDados(dadoRa, dadoRb);
         }
 
-        void execucao(bitset<32> dadoRa, bitset<32> dadoRb, bitset<16> endereco, bitset<5> ALUOp, bool ALUSrc, bool branch, bool jump, unsigned short &pc){
+        void resetar(){
+            ovf = false;
+            Zero = false;
+            carry = false;
+            neg = false;
+            result = bitset<32>(0);
+        }
+
+        void execucao(bitset<32> &dadoRa, bitset<32> &dadoRb, bitset<16> &endereco, bitset<5> ALUOp, bool ALUSrc, bool branch, bool jump, unsigned short &pc){
             if(ALUSrc)
                 dadoRb = signalExtension(endereco);
             
@@ -31,7 +40,7 @@ class EXMEM{
                     pc = dadoRa.to_ulong();
                 }
                 else if(ALUOp == bitset<5>("10111")){
-
+                    
                 }
             }
 
@@ -40,24 +49,24 @@ class EXMEM{
                 if(ALUOp == bitset<5>("10101") and Zero){ // beq
                     pc += endereco.to_ulong();
                 }
-                else if(ALUOp == bitset<5>("10110") and !Zero){
+                else if(ALUOp == bitset<5>("10110") and !Zero){ // bne
                     pc += endereco.to_ulong();
                 }
-                else if(ALUOp == bitset<5>("11100") and bitsetToInt(result) > 0){
+                else if(ALUOp == bitset<5>("11100") and bitsetToInt(result) > 0){ // bgt
                     pc += endereco.to_ulong();
                 }
-                else if(ALUOp == bitset<5>("11101") and bitsetToInt(result) < 0){
+                else if(ALUOp == bitset<5>("11101") and bitsetToInt(result) < 0){ // blt
                     pc += endereco.to_ulong();
                 }
             }
         }
 
-        void ALU(bitset<32> dadoRa, bitset<32> dadoRb, bitset<5> ALUOp){
-            if(ALUOp == bitset<5>("00001")){ // add
+        void ALU(bitset<32> &dadoRa, bitset<32> &dadoRb, bitset<5> ALUOp){
+            if(ALUOp == bitset<5>("00001") or ALUOp == bitset<5>("00000")){ // add
                 result = dadoRa + dadoRb;
 		        cout << "ADD" << endl;
             }
-            else if(ALUOp == bitset<5>("00010")){ // sub
+            else if(ALUOp == bitset<5>("00010") or ALUOp == bitset<5>("11000")){ // sub
                 result = dadoRa - dadoRb;
 		        cout << "SUB" << endl;
             }
@@ -82,15 +91,15 @@ class EXMEM{
 		        cout << "AND" << endl;
             }
             else if(ALUOp == bitset<5>("01000")){ // asl
-                bool aux = dadoRa[0];
+                bool aux = dadoRa[31];
                 result = dadoRa << dadoRb.to_ulong();
-                result[0] = aux;
+                result.set(31, aux);
 		        cout << "ASL" << endl;
             }
             else if(ALUOp == bitset<5>("01001")){ // asr
-                bool aux = dadoRa[0];
+                bool aux = dadoRa[31];
                 result = dadoRa >> dadoRb.to_ulong();
-                result[0] = aux;
+                result[31] = aux;
 		        cout << "ASR" << endl;
             }
             else if(ALUOp == bitset<5>("01010")){ // lsl
@@ -114,7 +123,7 @@ class EXMEM{
                 result = dadoRb << 16;
 		        cout << "LCH" << endl;
             }
-            else if(ALUOp == bitset<5>("01110")){ // lcl
+            else if(ALUOp == bitset<5>("01111")){ // lcl
                 result = dadoRb;
 		        cout << "LCL" << endl;
             }
@@ -142,24 +151,25 @@ class EXMEM{
         }
 
         void exibirDados(bitset<32> dadoRa, bitset<32> dadoRb){
-            cout << "Dado Ra: " << bitsetToInt(dadoRa) << endl;
-            cout << "Dado Rb: " << bitsetToInt(dadoRb) << endl;
-            cout << "Resultado: " << bitsetToInt(result) << endl;
+            cout << "Dado Ra:   " << dadoRa << " = " << bitsetToInt(dadoRa) << endl;
+            cout << "Dado Rb:   " << dadoRb << " = " << bitsetToInt(dadoRb) << endl;
+            cout << "Resultado: " << result << " = " << bitsetToInt(result) << endl;
         }
 
         void memoria(bool mem_read, bool mem_write, bitset<32> dadoRa, bitset<32> dadoRb, CacheL1Dados *dados ){
             if (mem_read) {
                 bitset<16> endereco = recorte16(dadoRa, 0);
                 result = dados->getRegistrador(endereco);
-                cout<<"LOAD"<<endl;   
+                cout << "LOAD" << endl;
+                cout << dados->getRegistrador(endereco).to_ulong() << " = CacheL1Dados[" << endereco.to_ulong() << "]" << endl;
             }
 
             // Escreve na memória se MemWrite estiver ativado
             if (mem_write) {
                 bitset<16>endereco = recorte16(dadoRb, 0);
                 dados->setRegistrador(endereco,dadoRa);
-                cout<<"STORE"<<endl;
+                cout << "STORE" << endl;
+                cout << "CacheL1Dados[" << endereco.to_ulong() << "] = " << dados->getRegistrador(endereco).to_ulong() << endl;
             }
-
         }
 };

@@ -1,13 +1,9 @@
-add R1, R2, R3
-sub R3, R2, R1
-zeros R1
-xor R1, R2, R3
-or R1, R2, R3
-passnota R4, R3
-and R1, R2, R3
-asl R1, R2, R3
-asr R1, R2, R3
-lsl R1, R2, R3
-lsr R1, R2, R3
-passa R4, R3
+lcl R3, 20
+lcl R4, 30
+sub R5, R4, R3
+store R5, R4
+load R6, R5
+beq R6, R4, 2
+zeros R6
+store R5, R6
 halt

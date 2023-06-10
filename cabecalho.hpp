@@ -104,6 +104,7 @@ bitset<32> signalExtension(bitset<16> endereco){
 		extendido.set(i, endereco[15]);
 	return extendido;
 }
+
 bitset<16> signalExtension(bitset<8> endereco){
 	bitset<16> extendido;
 	for(int i=0; i<8; i++)

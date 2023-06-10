@@ -32,8 +32,6 @@ struct ControlUnit
         alu_src = false;
         reg_write = false;
         reg_dst = false;
-
-
     }
     
     void imprimirID()
@@ -79,7 +77,6 @@ bool ControlUnit::verificaTipoR(bitset<8> opcode) {
     if (opcode == bitset<8>("00001011")) {return true;}
     if (opcode == bitset<8>("00001100")) {return true;}
     if (opcode == bitset<8>("00001101")) {return true;}
-    if (opcode == bitset<8>("00011000")) {return true;}
     if (opcode == bitset<8>("00011001")) {return true;}
     if (opcode == bitset<8>("00011010")) {return true;}
     if (opcode == bitset<8>("00011110")) {return true;}
@@ -122,14 +119,24 @@ void ControlUnit::setControlUnit(bitset<8> opcode, bitset<32> instrucaoCompleta)
         imprimirID();
     }
 
+    else if (opcode == bitset<8>("00000000") or opcode == bitset<8>("00011000")) // addi e subi
+    {
+        // addi ou subi
+        reg_write = true;
+        reg_dst = true;
+        alu_src = true;
+        endereco = signalExtension(recorte8(instrucaoCompleta, 8));
+        imprimirID();
+    }
+
     else if (opcode == bitset<8>("00010000"))
     {
         // load
 
         mem_read = true;
         mem_to_reg = true;
-        alu_src = true;
         reg_write = true;
+        reg_dst = true;
         imprimirID();
     }
 
@@ -137,7 +144,6 @@ void ControlUnit::setControlUnit(bitset<8> opcode, bitset<32> instrucaoCompleta)
     {
         // store ou storei
         mem_write = true;
-        alu_src = true;
         imprimirID();
     }
 

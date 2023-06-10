@@ -48,6 +48,7 @@ class Interpretador{
             // final -> 11111111
 
         };
+        
         map<string, string> tipoInstrucaoMap = {
             // RaRbRc
             {"add" , "RaRbRc"},
@@ -67,7 +68,8 @@ class Interpretador{
             {"passnota" , "RaRc"},
             {"passa"    , "RaRc"},
             {"load"     , "RaRc"},
-            {"store"    , "RaRc"},
+            // Store
+            {"store"    , "Store"},
             // Rc
             {"zeros" , "Rc"},
             {"jr"    , "Rc"},
@@ -117,6 +119,8 @@ class Interpretador{
                         instrucaoBin = tipoRaRbRc(instrucaoBin, linha);
                     else if(tipoInstrucaoMap[funcao] == "RaRc")
                         instrucaoBin = tipoRaRc(instrucaoBin, linha);
+                    else if(tipoInstrucaoMap[funcao] == "Store")
+                        instrucaoBin = tipoStore(instrucaoBin, linha);
                     else if(tipoInstrucaoMap[funcao] == "Rc")
                         instrucaoBin = tipoRc(instrucaoBin, linha);
                     else if(tipoInstrucaoMap[funcao] == "RcConst")
@@ -182,6 +186,19 @@ class Interpretador{
 	        bitset<8> ra(reg);
 
             bitset<8> rb(0);
+
+            instrucaoBin += ra.to_string() + rb.to_string() + rc.to_string();
+
+            return instrucaoBin;
+        }
+
+        string tipoStore(string instrucaoBin, string linha){
+            bitset<8> rb(retornaNumLinha(linha));
+
+            int reg = stoi(linha.substr(1));
+	        bitset<8> ra(reg);
+
+            bitset<8> rc(0);
 
             instrucaoBin += ra.to_string() + rb.to_string() + rc.to_string();
 
