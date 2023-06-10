@@ -8,7 +8,6 @@ struct ControlUnit
     bool jump = false;
     bool branch = false;
     bool mem_read = false;
-    bool mem_to_reg = false;
     bool mem_write = false;
     bool alu_src = false;
     bool reg_write = false;
@@ -27,7 +26,6 @@ struct ControlUnit
         jump = false;
         branch = false;
         mem_read = false;
-        mem_to_reg = false;
         mem_write = false;
         alu_src = false;
         reg_write = false;
@@ -39,7 +37,6 @@ struct ControlUnit
         cout << "jump: " << jump << endl
              << "branch: " << branch << endl
              << "mem_read: " << mem_read << endl
-             << "mem_to_reg: " << mem_to_reg << endl
              << "mem_write: " << mem_write << endl
              << "alu_src: " << alu_src << endl
              << "reg_write: " << reg_write << endl
@@ -134,7 +131,6 @@ void ControlUnit::setControlUnit(bitset<8> opcode, bitset<32> instrucaoCompleta)
         // load
 
         mem_read = true;
-        mem_to_reg = true;
         reg_write = true;
         reg_dst = true;
         imprimirID();
