@@ -18,7 +18,7 @@ int bitsetToInt(bitset<5> b){
 	return retorno;
 }
 
-bitset<32> operator+(bitset<32> b1, bitset<32> b2){
+bitset<32> operator+(bitset<32> b1, bitset<32> b2){ // soma de bitset 32b
 	bitset<32> result;
 	bool vai1 = 0;
 	for(int i=0; i<32; i++){
@@ -46,7 +46,7 @@ bitset<32> operator+(bitset<32> b1, bitset<32> b2){
 	return result;
 }
 
-bitset<32> operator-(bitset<32> b1, bitset<32> b2){
+bitset<32> operator-(bitset<32> b1, bitset<32> b2){ // subtracao de bitset 32b
 	b2.flip();
 	bitset<32> aux(1);
 	b2 = b2 + aux;
@@ -54,14 +54,14 @@ bitset<32> operator-(bitset<32> b1, bitset<32> b2){
 	return result;
 }
 
-bitset<32> operator<(bitset<32> b1, bitset<32> b2){
+bitset<32> operator<(bitset<32> b1, bitset<32> b2){ // comparacao (menor que) de bitset 32b
 	bitset<32> aux = b1 - b2;
 	bitset<32> result;
 	result = bitset<32>(aux[31]);
 	return result;
 }
 
-bitset<32> operator^(bitset<32> b1, bitset<32> b2){
+bitset<32> operator^(bitset<32> b1, bitset<32> b2){ // xor de bitset 32b
     bitset<32> result;
 	for(int i=0; i<32; i++){
         if(b1[i] == b2[i])
@@ -70,6 +70,26 @@ bitset<32> operator^(bitset<32> b1, bitset<32> b2){
             result[i] = 1;
     }
     return result;
+}
+
+bitset<32> operator*(bitset<32> b1, bitset<32> b2){
+	int aux = bitsetToInt(b1) * bitsetToInt(b2);
+	bitset<32> result(aux);
+
+	if((b1[31] == b2[31]) and (result[31] == 1))
+		overflow = true;
+	else if((b1[31] != b2[31]) and (result[31] == 0))
+		overflow = true;
+	else
+		overflow = false;
+	
+	return result;
+}
+
+bitset<32> operator/(bitset<32> b1, bitset<32> b2){
+	int aux = bitsetToInt(b1) / bitsetToInt(b2);
+	bitset<32> result(aux);
+	return result;
 }
 
 bitset<16> recorte16(bitset<32> linha, int inicio){ // recorta de tras pra frente  16<-inicio

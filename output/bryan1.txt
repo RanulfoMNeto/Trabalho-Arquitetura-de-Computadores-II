@@ -1,0 +1,6 @@
+lcl R1, 10
+lcl R2, 5 
+beq R1, R2, 2
+addi R2, R2, 1
+bne R1, R2 , -3
+halt

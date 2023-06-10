@@ -72,7 +72,8 @@ class Interpretador{
             {"store"    , "Store"},
             // Rc
             {"zeros" , "Rc"},
-            {"jr"    , "Rc"},
+            // Ra
+            {"jr"    , "Ra"},
             // RcConst
             {"lch"   , "RcConst"},
             {"lcl"   , "RcConst"},
@@ -123,6 +124,8 @@ class Interpretador{
                         instrucaoBin = tipoStore(instrucaoBin, linha);
                     else if(tipoInstrucaoMap[funcao] == "Rc")
                         instrucaoBin = tipoRc(instrucaoBin, linha);
+                    else if(tipoInstrucaoMap[funcao] == "Ra")
+                        instrucaoBin = tipoRa(instrucaoBin, linha);
                     else if(tipoInstrucaoMap[funcao] == "RcConst")
                         instrucaoBin = tipoRcConst(instrucaoBin, linha);
                     else if(tipoInstrucaoMap[funcao] == "RaRbEnd")
@@ -211,6 +214,18 @@ class Interpretador{
 
             bitset<8> ra(0);
             bitset<8> rb(0);
+
+            instrucaoBin += ra.to_string() + rb.to_string() + rc.to_string();
+
+            return instrucaoBin;
+        }
+
+        string tipoRa(string instrucaoBin, string linha){
+            int reg = stoi(linha.substr(1));
+	        bitset<8> ra(reg);
+
+            bitset<8> rb(0);
+            bitset<8> rc(0);
 
             instrucaoBin += ra.to_string() + rb.to_string() + rc.to_string();
 

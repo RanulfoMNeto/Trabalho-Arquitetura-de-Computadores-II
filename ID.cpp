@@ -198,5 +198,10 @@ public:
         {
             Write_Adrr = rb;
         }
+
+        if(opcode == bitset<8>("00010010")){
+            Write_Adrr = bitset<8>(31);
+            reg_write = true;
+        }
     }
 };

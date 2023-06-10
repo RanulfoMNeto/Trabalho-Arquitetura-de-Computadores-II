@@ -33,30 +33,49 @@ class EXMEM{
 
             if(jump){
                 if(ALUOp == bitset<5>("10010")){ // jal
+                    cout << "JUMP AND LINK" << endl;
+                    cout << "BancoRegistradores[31] = " << pc << endl;
+                    cout << "PC = " << endereco.to_ulong() << endl;
                     result = pc;
                     pc = endereco.to_ulong();
                 }
-                else if(ALUOp == bitset<5>("10011")){
+                else if(ALUOp == bitset<5>("10011")){ // jr
+                    cout << "JUMP REGISTER" << endl;
+                    cout << "PC = " << dadoRa.to_ulong() << endl;
                     pc = dadoRa.to_ulong();
                 }
-                else if(ALUOp == bitset<5>("10111")){
-                    
+                else if(ALUOp == bitset<5>("10111")){ // j
+                    cout << "JUMP" << endl;
+                    cout << "PC = " << endereco.to_ulong() << endl;
+                    pc = endereco.to_ulong();
                 }
             }
 
             Zero = !result.any();
             if(branch){
-                if(ALUOp == bitset<5>("10101") and Zero){ // beq
-                    pc += endereco.to_ulong();
+                if(ALUOp == bitset<5>("10101")){ // beq
+                    cout << "BRANCH IF EQUAL" << endl;
+                    cout << dadoRa.to_ulong() << " == " << dadoRb.to_ulong() << endl;
+                    if(Zero)
+                        pc += endereco.to_ulong();
                 }
                 else if(ALUOp == bitset<5>("10110") and !Zero){ // bne
-                    pc += endereco.to_ulong();
+                    cout << "BRANCH IF NOT EQUAL" << endl;
+                    cout << dadoRa.to_ulong() << " != " << dadoRb.to_ulong() << endl;
+                    if(!Zero)
+                        pc += endereco.to_ulong();
                 }
-                else if(ALUOp == bitset<5>("11100") and bitsetToInt(result) > 0){ // bgt
-                    pc += endereco.to_ulong();
+                else if(ALUOp == bitset<5>("11100")){ // bgt
+                    cout << "BRANCH IF GREATER THAN" << endl;
+                    cout << dadoRa.to_ulong() << " > " << dadoRb.to_ulong() << endl;
+                    if(bitsetToInt(result) > 0)
+                        pc += endereco.to_ulong();
                 }
-                else if(ALUOp == bitset<5>("11101") and bitsetToInt(result) < 0){ // blt
-                    pc += endereco.to_ulong();
+                else if(ALUOp == bitset<5>("11101")){ // blt
+                    cout << "BRANCH IF LESS THAN" << endl;
+                    cout << dadoRa.to_ulong() << " < " << dadoRb.to_ulong() << endl;
+                    if(bitsetToInt(result) < 0)
+                        pc += endereco.to_ulong();
                 }
             }
         }
@@ -129,18 +148,17 @@ class EXMEM{
             }
             else if(ALUOp == bitset<5>("10101") or ALUOp == bitset<5>("10110") or ALUOp == bitset<5>("11100") or ALUOp == bitset<5>("11101")){ // branch
                 result = dadoRa - dadoRb;
-		        cout << "BRANCH" << endl;
             }
             else if(ALUOp == bitset<5>("11000")){ // subi
                 result = dadoRa - dadoRb;
 		        cout << "SUBI" << endl;
             }
             else if(ALUOp == bitset<5>("11001")){ // mul
-                // result = dadoRa * dadoRb;
+                result = dadoRa * dadoRb;
 		        cout << "MUL" << endl;
             }
             else if(ALUOp == bitset<5>("11010")){ // div
-                // result = dadoRa / dadoRb;
+                result = dadoRa / dadoRb;
 		        cout << "DIV" << endl;
             }
             else if(ALUOp == bitset<5>("11110")){ // nand
