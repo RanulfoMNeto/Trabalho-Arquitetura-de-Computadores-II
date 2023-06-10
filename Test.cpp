@@ -14,6 +14,10 @@ class AssertException : public exception {
         }
 };
 
+string to_string(bitset<32> b) {
+    return to_string(b.to_ulong());
+}
+
 template<typename Auto>
 class Test {
     private:
