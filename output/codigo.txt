@@ -1,9 +1,4 @@
-lcl R3, 20
-lcl R4, 30
-sub R5, R4, R3
-store R5, R4
-load R6, R5
-beq R6, R4, 2
-zeros R6
-store R5, R6
+lcl R3, 10
+storei R3, 35
+load R4, R3
 halt

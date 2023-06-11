@@ -122,6 +122,8 @@ class Interpretador{
                         instrucaoBin = tipoRaRc(instrucaoBin, linha);
                     else if(tipoInstrucaoMap[funcao] == "Store")
                         instrucaoBin = tipoStore(instrucaoBin, linha);
+                    else if(tipoInstrucaoMap[funcao] == "StoreImm")
+                        instrucaoBin = tipoStoreImm(instrucaoBin, linha);
                     else if(tipoInstrucaoMap[funcao] == "Rc")
                         instrucaoBin = tipoRc(instrucaoBin, linha);
                     else if(tipoInstrucaoMap[funcao] == "Ra")
