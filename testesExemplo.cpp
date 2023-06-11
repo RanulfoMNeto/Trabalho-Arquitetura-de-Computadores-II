@@ -7,16 +7,25 @@ using namespace std;
 
 int main() {
 
-    Test<int> test;
-    test.assertEqual(5-3, 2); // ID: 0
-    test.assertEqual(5-3, 3); // ID: 1
-    test.assertTrue(5>2); // ID: 2
-    test.assertFalse(5<3); // ID: 3
-    test.assertEqual((double)3/2, (double)1.5); // ID: 4
+    Processador proc = Processador("programa2.txt");
+    Test<bitset<32> > test;
+    test.assertEqual(proc.rb->getRegistrador(bitset<8>(3)), bitset<32>(20));
+    test.assertEqual(proc.rb->getRegistrador(bitset<8>(4)), bitset<32>(20));
 
-    Test<int> test2;
-    Processador proc = Processador("codigo.txt");
-    test2.assertEqual(proc.dados->getRegistrador(bitset<16>(10)).to_ulong(), 30);
+    Processador proc2 = Processador("programa3.txt");
+    test.assertEqual(proc2.rb->getRegistrador(bitset<8>(1)), bitset<32>(2));
+    test.assertEqual(proc2.rb->getRegistrador(bitset<8>(2)), bitset<32>(10));
+    test.assertEqual(proc2.rb->getRegistrador(bitset<8>(3)), bitset<32>(20));
+    test.assertEqual(proc2.rb->getRegistrador(bitset<8>(4)), bitset<32>(20));
+
+    EXMEM exmem = EXMEM();
+    unsigned short n = 10;
+
+    exmem.executar(bitset<32>(INT_MAX), bitset<32>(INT_MAX), bitset<16>(2), bitset<5>("00001"), false, false, false, n, false, false, NULL);
+    test.assertEqual(exmem.result, bitset<32>(-2));
+
+    exmem.executar(bitset<32>(INT_MAX), bitset<32>(INT_MAX), bitset<16>(2), bitset<5>("11001"), false, false, false, n, false, false, NULL);
+    test.assertEqual(exmem.result, bitset<32>(10));
     
     return 0;
 }
