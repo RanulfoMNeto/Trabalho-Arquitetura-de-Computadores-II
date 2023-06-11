@@ -14,6 +14,7 @@ class EXMEM{
             resetar();
             execucao(dadoRa, dadoRb, endereco, ALUOp, ALUSrc, branch, jump, pc);
             memoria(mem_read, mem_write, dadoRa, dadoRb, dados);
+            definirFlags();
             exibirDados(dadoRa, dadoRb);
         }
 
@@ -23,6 +24,21 @@ class EXMEM{
             carry = false;
             neg = false;
             result = bitset<32>(0);
+        }
+
+        void exibirDados(bitset<32> dadoRa, bitset<32> dadoRb){
+            cout << "FLAGS:\nOverflow: " << ovf << endl;
+            cout << "Zero: " << Zero << endl;
+            cout << "Carry: " << carry << endl;
+            cout << "Negativo: " << neg << endl;
+            cout << "Dado Ra:   " << dadoRa << " = " << bitsetToInt(dadoRa) << endl;
+            cout << "Dado Rb:   " << dadoRb << " = " << bitsetToInt(dadoRb) << endl;
+            cout << "Resultado: " << result << " = " << bitsetToInt(result) << endl;
+        }
+
+        void definirFlags(){
+            neg = result[31];
+            ovf = overflow;
         }
 
         void execucao(bitset<32> &dadoRa, bitset<32> &dadoRb, bitset<16> &endereco, bitset<5> ALUOp, bool ALUSrc, bool branch, bool jump, unsigned short &pc){
@@ -168,12 +184,6 @@ class EXMEM{
             }
         }
 
-        void exibirDados(bitset<32> dadoRa, bitset<32> dadoRb){
-            cout << "Dado Ra:   " << dadoRa << " = " << bitsetToInt(dadoRa) << endl;
-            cout << "Dado Rb:   " << dadoRb << " = " << bitsetToInt(dadoRb) << endl;
-            cout << "Resultado: " << result << " = " << bitsetToInt(result) << endl;
-        }
-
         void memoria(bool mem_read, bool mem_write, bitset<32> dadoRa, bitset<32> dadoRb, CacheL1Dados *dados ){
             if (mem_read) {
                 bitset<16> endereco = recorte16(dadoRa, 0);
@@ -185,7 +195,7 @@ class EXMEM{
             // Escreve na memória se MemWrite estiver ativado
             if (mem_write) {
                 bitset<16>endereco = recorte16(dadoRb, 0);
-                dados->setRegistrador(endereco,dadoRa);
+                dados->setRegistrador(endereco, dadoRa);
                 cout << "STORE" << endl;
                 cout << "CacheL1Dados[" << endereco.to_ulong() << "] = " << dados->getRegistrador(endereco).to_ulong() << endl;
             }

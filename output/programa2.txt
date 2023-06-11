@@ -1,0 +1,6 @@
+lcl R3, 15
+lcl R4, 20
+blt R4, R3, 2
+addi R3, R3, 1
+bgt R4, R3, -3
+halt

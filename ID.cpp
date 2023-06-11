@@ -203,5 +203,9 @@ public:
             Write_Adrr = bitset<8>(31);
             reg_write = true;
         }
+
+        if(opcode == bitset<8>("00011011")){
+            value_Ra = signalExtension(signalExtension(ra));
+        }
     }
 };

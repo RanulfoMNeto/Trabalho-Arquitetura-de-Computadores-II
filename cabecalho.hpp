@@ -46,6 +46,11 @@ bitset<32> operator+(bitset<32> b1, bitset<32> b2){ // soma de bitset 32b
 	return result;
 }
 
+bitset<32> complemento2(bitset<32> b1){
+	b1.flip();
+	return b1 + bitset<32>(1);
+}
+
 bitset<32> operator-(bitset<32> b1, bitset<32> b2){ // subtracao de bitset 32b
 	b2.flip();
 	bitset<32> aux(1);
@@ -73,8 +78,19 @@ bitset<32> operator^(bitset<32> b1, bitset<32> b2){ // xor de bitset 32b
 }
 
 bitset<32> operator*(bitset<32> b1, bitset<32> b2){
-	int aux = bitsetToInt(b1) * bitsetToInt(b2);
-	bitset<32> result(aux);
+	bitset<32> result(0);
+
+	bool neg = b2[31];
+
+	if(b2[31])
+		b2 = complemento2(b2);
+
+	for(int i=0; i<b2.to_ulong(); i++){
+		result = result + b1;
+	}
+
+	if(neg)
+		result[31] = !result[31];
 
 	if((b1[31] == b2[31]) and (result[31] == 1))
 		overflow = true;
@@ -87,8 +103,13 @@ bitset<32> operator*(bitset<32> b1, bitset<32> b2){
 }
 
 bitset<32> operator/(bitset<32> b1, bitset<32> b2){
-	int aux = bitsetToInt(b1) / bitsetToInt(b2);
-	bitset<32> result(aux);
+	bitset<32> result(0);
+
+	while(b1.to_ulong() >= b2.to_ulong()){
+		b1 = b1 - b2;
+		result = result + bitset<32>(1);
+	}
+
 	return result;
 }
 

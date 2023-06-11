@@ -277,4 +277,16 @@ class Interpretador{
 
             return instrucaoBin;
         }
+
+        string tipoStoreImm(string instrucaoBin, string linha){
+            bitset<8> rb(retornaNumLinha(linha));
+
+            int reg = stoi(linha);
+	        bitset<8> ra(reg);
+            bitset<8> rc(0);
+
+            instrucaoBin += ra.to_string() + rb.to_string() + rc.to_string();
+
+            return instrucaoBin;
+        }
 };

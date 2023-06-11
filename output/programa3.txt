@@ -1,0 +1,9 @@
+lcl R1, 2
+lcl R2, 2
+lcl R3 , 20
+lcl R4, 0
+mul R4, R1, R2
+beq R3 , R4, 2
+addi R2, R2, 1
+j -4
+halt
