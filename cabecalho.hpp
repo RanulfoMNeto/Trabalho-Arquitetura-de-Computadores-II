@@ -85,7 +85,7 @@ bitset<32> operator*(bitset<32> b1, bitset<32> b2){
 	if(b2[31])
 		b2 = complemento2(b2);
 
-	for(int i=0; i<b2.to_ulong(); i++){
+	for(int i=0; i<b2.to_ulong() and !overflow; i++){
 		result = result + b1;
 	}
 
