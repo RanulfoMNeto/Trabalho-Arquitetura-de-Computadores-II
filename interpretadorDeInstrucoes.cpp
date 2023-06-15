@@ -33,12 +33,13 @@ class Interpretador{
             {"bne"     , "00010110"},
             {"j"       , "00010111"},
             {"subi"    , "00011000"}, // sub com imediato ********
-            {"mul"     , "00011001"}, // multiplicação inteira ********
-            {"div"     , "00011010"}, // divisão inteira ********
+            {"bge"     , "00011001"}, // multiplicação inteira ********
+            {"ble"     , "00011010"}, // divisão inteira ********
             {"storei"  , "00011011"}, // store imediato ********
             {"bgt"     , "00011100"}, // branch greater than ********
             {"blt"     , "00011101"}, // branch less than ********
             {"nand"    , "00011110"}, // and bit-a-bit depois not(passnota) ********
+            {"mul"     , "00011111"}, // and bit-a-bit depois not(passnota) ********
             {"halt"    , "11111111"}  // final
             // addi
             // subi
@@ -60,10 +61,9 @@ class Interpretador{
             {"asr" , "RaRbRc"},
             {"lsl" , "RaRbRc"},
             {"lsr" , "RaRbRc"},
-            {"mul" , "RaRbRc"},
-            {"div" , "RaRbRc"},
             {"nor" , "RaRbRc"},
             {"nand", "RaRbRc"},
+            {"mul", "RaRbRc"},
             // RaRc
             {"passnota" , "RaRc"},
             {"passa"    , "RaRc"},
@@ -82,6 +82,8 @@ class Interpretador{
             {"bne" , "RaRbEnd"},
             {"bgt" , "RaRbEnd"},
             {"blt" , "RaRbEnd"},
+            {"bge" , "RaRbEnd"},
+            {"ble" , "RaRbEnd"},
             // R0Imme
             {"jal" , "R0Imme"},
             {"j"   , "R0Imme"},

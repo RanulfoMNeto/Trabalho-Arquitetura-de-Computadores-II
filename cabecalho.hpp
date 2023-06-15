@@ -6,8 +6,6 @@
 
 using namespace std;
 
-bool overflow = false;
-
 int bitsetToInt(bitset<32> b){
 	int retorno = b.to_ulong();
 	return retorno;
@@ -18,7 +16,7 @@ int bitsetToInt(bitset<5> b){
 	return retorno;
 }
 
-bitset<32> operator+(bitset<32> b1, bitset<32> b2){ // soma de bitset 32b
+bitset<32> somaBitset32(bitset<32> b1, bitset<32> b2, bool &overflow, bool &carry){
 	bitset<32> result;
 	bool vai1 = 0;
 	for(int i=0; i<32; i++){
@@ -36,33 +34,48 @@ bitset<32> operator+(bitset<32> b1, bitset<32> b2){ // soma de bitset 32b
 		else{
 			vai1 = 0;
 		}
+
+		if(i == 30){
+			overflow = vai1;
+		}
 	}
 
-	if((b1[31] == b2[31]) and (b2[31] != result[31]))
+	if(b1[31] == b2[31] and vai1 != overflow)
 		overflow = true;
 	else
 		overflow = false;
 
+	carry = vai1;
+
 	return result;
 }
 
-bitset<32> complemento2(bitset<32> b1){
+bitset<32> complemento2(bitset<32> b1, bool &overflow, bool &carry){
 	b1.flip();
-	return b1 + bitset<32>(1);
+	return somaBitset32(b1, bitset<32>(1), overflow, carry);
 }
 
-bitset<32> operator-(bitset<32> b1, bitset<32> b2){ // subtracao de bitset 32b
-	b2.flip();
-	bitset<32> aux(1);
-	b2 = b2 + aux;
-	bitset<32> result = b1 + b2;
+bitset<32> subtracaoBitset32(bitset<32> b1, bitset<32> b2, bool &overflow, bool &carry){ // subtracao de bitset 32b
+	b2 = complemento2(b2, overflow, carry);
+	bitset<32> result = somaBitset32(b1, b2, overflow, carry);
 	return result;
 }
 
-bitset<32> operator<(bitset<32> b1, bitset<32> b2){ // comparacao (menor que) de bitset 32b
-	bitset<32> aux = b1 - b2;
-	bitset<32> result;
-	result = bitset<32>(aux[31]);
+bitset<32> multiplicacaoBitset32(bitset<32> b1, bitset<32> b2, bool &overflow, bool &carry){
+	bitset<32> result(0);
+
+	bool neg = b2[31];
+
+	if(b2[31])
+		b2 = complemento2(b2, overflow, carry);
+
+	for(int i=0; i<b2.to_ulong() and !overflow; i++){
+		result = somaBitset32(result, b1, overflow, carry);
+	}
+
+	if(neg)
+		result[31] = !result[31];
+	
 	return result;
 }
 
@@ -75,42 +88,6 @@ bitset<32> operator^(bitset<32> b1, bitset<32> b2){ // xor de bitset 32b
             result[i] = 1;
     }
     return result;
-}
-
-bitset<32> operator*(bitset<32> b1, bitset<32> b2){
-	bitset<32> result(0);
-
-	bool neg = b2[31];
-
-	if(b2[31])
-		b2 = complemento2(b2);
-
-	for(int i=0; i<b2.to_ulong() and !overflow; i++){
-		result = result + b1;
-	}
-
-	if(neg)
-		result[31] = !result[31];
-
-	if((b1[31] == b2[31]) and (result[31] == 1))
-		overflow = true;
-	else if((b1[31] != b2[31]) and (result[31] == 0))
-		overflow = true;
-	else
-		overflow = false;
-	
-	return result;
-}
-
-bitset<32> operator/(bitset<32> b1, bitset<32> b2){
-	bitset<32> result(0);
-
-	while(b1.to_ulong() >= b2.to_ulong()){
-		b1 = b1 - b2;
-		result = result + bitset<32>(1);
-	}
-
-	return result;
 }
 
 bitset<16> recorte16(bitset<32> linha, int inicio){ // recorta de tras pra frente  16<-inicio

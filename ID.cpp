@@ -74,9 +74,8 @@ bool ControlUnit::verificaTipoR(bitset<8> opcode) {
     if (opcode == bitset<8>("00001011")) {return true;}
     if (opcode == bitset<8>("00001100")) {return true;}
     if (opcode == bitset<8>("00001101")) {return true;}
-    if (opcode == bitset<8>("00011001")) {return true;}
-    if (opcode == bitset<8>("00011010")) {return true;}
     if (opcode == bitset<8>("00011110")) {return true;}
+    if (opcode == bitset<8>("00011111")) {return true;}
 
     else {return false;}
 }
@@ -86,6 +85,8 @@ bool ControlUnit::verificaTipoB(bitset<8> opcode) {
     if (opcode == bitset<8>("00010110")) {return true;}
     if (opcode == bitset<8>("00011100")) {return true;}
     if (opcode == bitset<8>("00011101")) {return true;}
+    if (opcode == bitset<8>("00011001")) {return true;}
+    if (opcode == bitset<8>("00011010")) {return true;}
     
     else {return false;}
 }

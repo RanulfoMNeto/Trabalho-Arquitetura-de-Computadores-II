@@ -4,8 +4,8 @@
 
 class EXMEM{
     public:
-        bool ovf;
-		bool Zero;
+        bool overflow;
+		bool zero;
         bool carry;
         bool neg;
 		bitset<32> result;
@@ -19,16 +19,16 @@ class EXMEM{
         }
 
         void resetar(){
-            ovf = false;
-            Zero = false;
+            overflow = false;
+            zero = false;
             carry = false;
             neg = false;
             result = bitset<32>(0);
         }
 
         void exibirDados(bitset<32> dadoRa, bitset<32> dadoRb){
-            cout << "FLAGS:\nOverflow: " << ovf << endl;
-            cout << "Zero: " << Zero << endl;
+            cout << "FLAGS:\nOverflow: " << overflow << endl;
+            cout << "Zero: " << zero << endl;
             cout << "Carry: " << carry << endl;
             cout << "Negativo: " << neg << endl;
             cout << "Dado Ra:   " << dadoRa << " = " << bitsetToInt(dadoRa) << endl;
@@ -38,7 +38,6 @@ class EXMEM{
 
         void definirFlags(){
             neg = result[31];
-            ovf = overflow;
         }
 
         void execucao(bitset<32> &dadoRa, bitset<32> &dadoRb, bitset<16> &endereco, bitset<5> ALUOp, bool ALUSrc, bool branch, bool jump, unsigned short &pc){
@@ -67,18 +66,18 @@ class EXMEM{
                 }
             }
 
-            Zero = !result.any();
+            zero = !result.any();
             if(branch){
                 if(ALUOp == bitset<5>("10101")){ // beq
                     cout << "BRANCH IF EQUAL" << endl;
                     cout << dadoRa.to_ulong() << " == " << dadoRb.to_ulong() << endl;
-                    if(Zero)
+                    if(zero)
                         pc += endereco.to_ulong();
                 }
-                else if(ALUOp == bitset<5>("10110") and !Zero){ // bne
+                else if(ALUOp == bitset<5>("10110") and !zero){ // bne
                     cout << "BRANCH IF NOT EQUAL" << endl;
                     cout << dadoRa.to_ulong() << " != " << dadoRb.to_ulong() << endl;
-                    if(!Zero)
+                    if(!zero)
                         pc += endereco.to_ulong();
                 }
                 else if(ALUOp == bitset<5>("11100")){ // bgt
@@ -93,16 +92,28 @@ class EXMEM{
                     if(bitsetToInt(result) < 0)
                         pc += endereco.to_ulong();
                 }
+                else if(ALUOp == bitset<5>("11001")){ // bge
+                    cout << "BRANCH IF GREATER THAN OR EQUAL" << endl;
+                    cout << dadoRa.to_ulong() << " >= " << dadoRb.to_ulong() << endl;
+                    if(bitsetToInt(result) > 0 or zero)
+                        pc += endereco.to_ulong();
+                }
+                else if(ALUOp == bitset<5>("11010")){ // ble
+                    cout << "BRANCH IF LESS THAN OR EQUAL" << endl;
+                    cout << dadoRa.to_ulong() << " <= " << dadoRb.to_ulong() << endl;
+                    if(bitsetToInt(result) < 0 or zero)
+                        pc += endereco.to_ulong();
+                }
             }
         }
 
         void ALU(bitset<32> &dadoRa, bitset<32> &dadoRb, bitset<5> ALUOp){
             if(ALUOp == bitset<5>("00001") or ALUOp == bitset<5>("00000")){ // add
-                result = dadoRa + dadoRb;
+                result = somaBitset32(dadoRa, dadoRb, overflow, carry);
 		        cout << "ADD" << endl;
             }
-            else if(ALUOp == bitset<5>("00010") or ALUOp == bitset<5>("11000")){ // sub
-                result = dadoRa - dadoRb;
+            else if(ALUOp == bitset<5>("00010")){ // sub
+                result = subtracaoBitset32(dadoRa, dadoRb, overflow, carry);
 		        cout << "SUB" << endl;
             }
             else if(ALUOp == bitset<5>("00011")){ // zeros
@@ -162,25 +173,21 @@ class EXMEM{
                 result = dadoRb;
 		        cout << "LCL" << endl;
             }
-            else if(ALUOp == bitset<5>("10101") or ALUOp == bitset<5>("10110") or ALUOp == bitset<5>("11100") or ALUOp == bitset<5>("11101")){ // branch
-                result = dadoRa - dadoRb;
+            else if(ALUOp == bitset<5>("10101") or ALUOp == bitset<5>("10110") or ALUOp == bitset<5>("11100") or ALUOp == bitset<5>("11101") or ALUOp == bitset<5>("11001") or ALUOp == bitset<5>("11010")){ // branch
+                result = subtracaoBitset32(dadoRa, dadoRb, overflow, carry);
             }
             else if(ALUOp == bitset<5>("11000")){ // subi
-                result = dadoRa - dadoRb;
+                result = subtracaoBitset32(dadoRa, dadoRb, overflow, carry);
 		        cout << "SUBI" << endl;
-            }
-            else if(ALUOp == bitset<5>("11001")){ // mul
-                result = dadoRa * dadoRb;
-		        cout << "MUL" << endl;
-            }
-            else if(ALUOp == bitset<5>("11010")){ // div
-                result = dadoRa / dadoRb;
-		        cout << "DIV" << endl;
             }
             else if(ALUOp == bitset<5>("11110")){ // nand
                 result = dadoRa & dadoRb;
                 result = result.flip();
 		        cout << "NAND" << endl;
+            }
+            else if(ALUOp == bitset<5>("11111")){ // mul
+                result = multiplicacaoBitset32(dadoRa, dadoRb, overflow, carry);
+		        cout << "MUL" << endl;
             }
         }
 
