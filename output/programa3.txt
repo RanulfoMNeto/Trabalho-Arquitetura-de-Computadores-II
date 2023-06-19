@@ -1,5 +1,5 @@
 lcl R1, 2
-lcl R2, 2
+lcl R2, 5
 lcl R3 , 20
 lcl R4, 0
 mul R4, R1, R2

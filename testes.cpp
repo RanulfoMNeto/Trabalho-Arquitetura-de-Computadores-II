@@ -19,10 +19,10 @@ int main() {
     exmem.executar(bitset<32>(INT_MAX), bitset<32>(INT_MAX), bitset<16>(2), bitset<5>("00001"), false, false, false, n, false, false, NULL);
     test.assertEqual(exmem.result, bitset<32>(-2));
 
-    exmem.executar(bitset<32>(7), bitset<32>(5), bitset<16>(2), bitset<5>("11001"), false, false, false, n, false, false, NULL);
+    exmem.executar(bitset<32>(7), bitset<32>(5), bitset<16>(2), bitset<5>("11111"), false, false, false, n, false, false, NULL);
     test.assertEqual(exmem.result, bitset<32>(35));
 
-    exmem.executar(bitset<32>(INT_MAX), bitset<32>(INT_MAX), bitset<16>(2), bitset<5>("11001"), false, false, false, n, false, false, NULL);
+    exmem.executar(bitset<32>(INT_MAX), bitset<32>(INT_MAX), bitset<16>(2), bitset<5>("11111"), false, false, false, n, false, false, NULL);
     test.assertEqual(exmem.result, bitset<32>(10));
 
     // Teste de Programas
